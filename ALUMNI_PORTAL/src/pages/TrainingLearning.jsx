@@ -1,7 +1,8 @@
 import React, { useRef, useState, useEffect, useMemo } from "react";
 import FiltersPanel from "../components/Training_Learning/FiltersPanel";
 import SortFilterDropdown from "../components/content_management/SortFilterDropdown";
-import CourseCard from "../components/Training_Learning/CourseCard"; // Adjust path as needed
+import CourseCard from "../components/Training_Learning/CourseCard";
+import RecCourses from "../components/Training_Learning/RecCourses";
 
 const PLATFORMS = [
   {
@@ -104,8 +105,7 @@ const DUMMY_COURSES = [
     role: "Manager",
     instructor: { name: "Robert Wilson", avatar: "https://i.pravatar.cc/150?img=11" },
     price: 0,
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png",
+    image: "https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png",
     platform: "LinkedIn Learning",
     url: "https://www.linkedin.com/learning/",
   },
@@ -161,7 +161,6 @@ const DUMMY_COURSES = [
 
 const ITEMS_PER_PAGE = 6;
 
-/** Pagination UI helper (same format as your UserManagement) */
 function getPageNumbers(currentPage, totalPages) {
   if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1);
 
@@ -170,19 +169,16 @@ function getPageNumbers(currentPage, totalPages) {
   const right = Math.min(totalPages - 1, currentPage + 1);
 
   pages.push(1);
-
   if (left > 2) pages.push("...");
 
   for (let p = left; p <= right; p++) pages.push(p);
 
   if (right < totalPages - 1) pages.push("...");
-
   pages.push(totalPages);
 
   return pages;
 }
 
-/** ✅ moved outside so it’s not recreated during render */
 function CourseGridSection({
   paginatedCourses,
   filteredCourses,
@@ -193,7 +189,6 @@ function CourseGridSection({
 }) {
   return (
     <div className="mt-6">
-      {/* Results Count */}
       <div className="mb-4 text-sm text-gray-600 flex justify-between items-center">
         <span>
           Showing {paginatedCourses.length} of {filteredCourses.length} courses
@@ -205,7 +200,6 @@ function CourseGridSection({
         )}
       </div>
 
-      {/* Grid */}
       {filteredCourses.length > 0 ? (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -214,7 +208,6 @@ function CourseGridSection({
             ))}
           </div>
 
-          {/* ✅ Pagination (UserManagement style) */}
           <div className="mt-8 flex items-center justify-end gap-3">
             <button
               className="px-5 py-2.5 bg-[#DAB619] text-white hover:bg-[#c4a015] disabled:opacity-50 disabled:cursor-not-allowed rounded-md border border-[#AAA9A9] transition-colors"
@@ -230,12 +223,7 @@ function CourseGridSection({
                 disabled={safePage === 1}
                 onClick={() => goToPage(safePage - 1)}
               >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -275,12 +263,7 @@ function CourseGridSection({
                 disabled={safePage === totalPages}
                 onClick={() => goToPage(safePage + 1)}
               >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -317,20 +300,17 @@ function CourseGridSection({
 }
 
 export default function TrainingLearning() {
-  const scrollerRef = useRef(null);
+  const platformScrollerRef = useRef(null);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
-  // Filter States
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [departmentFilter, setDepartmentFilter] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
   const [skillFilter, setSkillFilter] = useState("");
 
-  // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Reset page 1 with filter changes (NO useEffect needed)
   const setSearchQueryAndReset = (value) => {
     setSearchQuery(value);
     setCurrentPage(1);
@@ -352,8 +332,8 @@ export default function TrainingLearning() {
     setCurrentPage(1);
   };
 
-  const scrollByCards = (dir) => {
-    scrollerRef.current?.scrollBy({ left: 320 * dir, behavior: "smooth" });
+  const scrollPlatforms = (dir) => {
+    platformScrollerRef.current?.scrollBy({ left: 320 * dir, behavior: "smooth" });
   };
 
   const handleClearAll = () => {
@@ -376,11 +356,8 @@ export default function TrainingLearning() {
         course.category.toLowerCase().includes(searchLower) ||
         course.instructor.name.toLowerCase().includes(searchLower);
 
-      const matchesDepartment =
-        !departmentFilter || course.department === departmentFilter;
-
+      const matchesDepartment = !departmentFilter || course.department === departmentFilter;
       const matchesRole = !roleFilter || course.role === roleFilter;
-
       const matchesSkill = !skillFilter || course.skill === skillFilter;
 
       return matchesSearch && matchesDepartment && matchesRole && matchesSkill;
@@ -412,8 +389,7 @@ export default function TrainingLearning() {
 
   useEffect(() => {
     const sidebar =
-      document.getElementById("app-sidebar") ||
-      document.querySelector('[data-sidebar="true"]');
+      document.getElementById("app-sidebar") || document.querySelector('[data-sidebar="true"]');
 
     if (!sidebar) return;
 
@@ -433,29 +409,31 @@ export default function TrainingLearning() {
     setCurrentPage(next);
   };
 
+  const recommendedCourses = useMemo(() => DUMMY_COURSES.slice(0, 6), []);
+
   return (
     <div className="p-6">
-      {/* Carousel */}
+      {/* Platforms Carousel */}
       <section className="rounded-2xl px-16 py-10 bg-[#EEE6C8]">
         <h2 className="text-lg font-semibold mb-6">Learning Platforms</h2>
 
         <div className="relative">
           <button
-            onClick={() => scrollByCards(-1)}
+            onClick={() => scrollPlatforms(-1)}
             className="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full border bg-white grid place-items-center hover:bg-gray-50 transition-colors"
           >
             ‹
           </button>
 
           <button
-            onClick={() => scrollByCards(1)}
+            onClick={() => scrollPlatforms(1)}
             className="absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full border bg-white grid place-items-center hover:bg-gray-50 transition-colors"
           >
             ›
           </button>
 
           <div
-            ref={scrollerRef}
+            ref={platformScrollerRef}
             className="flex justify-center gap-8 overflow-x-auto px-6 py-8"
           >
             {filteredPlatforms.map((p) => (
@@ -474,12 +452,11 @@ export default function TrainingLearning() {
         </div>
       </section>
 
-      {/* SEARCH + NEWEST ROW */}
+      {/* Search + Sort */}
       <div className="mt-8 flex justify-center">
         <div className="max-w-4xl w-full">
           <div className="bg-white rounded-2xl border p-4">
             <div className="flex items-center gap-3">
-              {/* Search */}
               <div className="relative flex-1">
                 <input
                   value={searchQuery}
@@ -489,44 +466,46 @@ export default function TrainingLearning() {
                 />
               </div>
 
-              {/* Newest */}
               <SortFilterDropdown value={sortBy} onChange={setSortByAndReset} />
             </div>
           </div>
         </div>
       </div>
 
-      {/* FILTERS & COURSES GRID */}
+      {/* Filters + Grid */}
       {isSidebarCollapsed ? (
-        <div className="mt-6 grid grid-cols-12 gap-6">
-          {/* Sidebar Filters */}
-          <aside className="col-span-3">
-            <FiltersPanel
-              variant="sidebar"
-              showSearch={false}
-              showClearTop={false}
-              departmentFilter={departmentFilter}
-              setDepartmentFilter={setDepartmentFilterAndReset}
-              roleFilter={roleFilter}
-              setRoleFilter={setRoleFilterAndReset}
-              skillFilter={skillFilter}
-              setSkillFilter={setSkillFilterAndReset}
-              onClear={handleClearAll}
-            />
-          </aside>
+        <>
+          <div className="mt-6 grid grid-cols-12 gap-6">
+            <aside className="col-span-3">
+              <FiltersPanel
+                variant="sidebar"
+                showSearch={false}
+                showClearTop={false}
+                departmentFilter={departmentFilter}
+                setDepartmentFilter={setDepartmentFilterAndReset}
+                roleFilter={roleFilter}
+                setRoleFilter={setRoleFilterAndReset}
+                skillFilter={skillFilter}
+                setSkillFilter={setSkillFilterAndReset}
+                onClear={handleClearAll}
+              />
+            </aside>
 
-          {/* Main Content - Course Grid */}
-          <main className="col-span-9">
-            <CourseGridSection
-              paginatedCourses={paginatedCourses}
-              filteredCourses={filteredCourses}
-              safePage={safePage}
-              totalPages={totalPages}
-              goToPage={goToPage}
-              handleClearAll={handleClearAll}
-            />
-          </main>
-        </div>
+            <main className="col-span-9">
+              <CourseGridSection
+                paginatedCourses={paginatedCourses}
+                filteredCourses={filteredCourses}
+                safePage={safePage}
+                totalPages={totalPages}
+                goToPage={goToPage}
+                handleClearAll={handleClearAll}
+              />
+            </main>
+          </div>
+
+          {/* ✅ Full width section OUTSIDE grid */}
+          <RecCourses title="Recommended for you" courses={recommendedCourses} />
+        </>
       ) : (
         <div className="mt-1 flex flex-col items-center">
           <div className="max-w-4xl w-full">
@@ -553,6 +532,9 @@ export default function TrainingLearning() {
               handleClearAll={handleClearAll}
             />
           </div>
+
+          {/* ✅ Full width section (still works in inline layout) */}
+          <RecCourses title="Recommended for you" courses={recommendedCourses} />
         </div>
       )}
     </div>
