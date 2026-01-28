@@ -3,6 +3,7 @@ import FiltersPanel from "../components/Training_Learning/FiltersPanel";
 import SortFilterDropdown from "../components/content_management/SortFilterDropdown";
 import CourseCard from "../components/Training_Learning/CourseCard";
 import RecCourses from "../components/Training_Learning/RecCourses";
+import LearningPaths from "../components/Training_Learning/LearningPaths"; // ✅ ADD THIS
 
 const PLATFORMS = [
   {
@@ -105,7 +106,8 @@ const DUMMY_COURSES = [
     role: "Manager",
     instructor: { name: "Robert Wilson", avatar: "https://i.pravatar.cc/150?img=11" },
     price: 0,
-    image: "https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png",
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png",
     platform: "LinkedIn Learning",
     url: "https://www.linkedin.com/learning/",
   },
@@ -236,10 +238,7 @@ function CourseGridSection({
               <div className="flex items-center px-1">
                 {getPageNumbers(safePage, totalPages).map((page, idx) =>
                   page === "..." ? (
-                    <span
-                      key={`ellipsis-${idx}`}
-                      className="px-4 py-2.5 text-[#7B7B7B] font-bold"
-                    >
+                    <span key={`ellipsis-${idx}`} className="px-4 py-2.5 text-[#7B7B7B] font-bold">
                       …
                     </span>
                   ) : (
@@ -503,8 +502,10 @@ export default function TrainingLearning() {
             </main>
           </div>
 
-          {/* ✅ Full width section OUTSIDE grid */}
-          <RecCourses title="Recommended for you" courses={recommendedCourses} />
+          <RecCourses title="Recommended for you" courses={recommendedCourses} fullBleed />
+
+          {/* ✅ ADD LEARNING PATHS UNDER CAROUSEL */}
+          <LearningPaths defaultOpen={null} />
         </>
       ) : (
         <div className="mt-1 flex flex-col items-center">
@@ -533,8 +534,10 @@ export default function TrainingLearning() {
             />
           </div>
 
-          {/* ✅ Full width section (still works in inline layout) */}
-          <RecCourses title="Recommended for you" courses={recommendedCourses} />
+          <RecCourses title="Recommended for you" courses={recommendedCourses} fullBleed />
+
+          {/* ✅ ADD LEARNING PATHS UNDER CAROUSEL */}
+          <LearningPaths defaultOpen={null} />
         </div>
       )}
     </div>
