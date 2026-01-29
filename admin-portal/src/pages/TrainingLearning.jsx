@@ -1,11 +1,10 @@
-import React, { useRef, useState, useMemo } from "react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
 import FiltersPanel from "../components/Training_Learning/FiltersPanel";
 import SortFilterDropdown from "../components/content_management/SortFilterDropdown";
 import CourseCard from "../components/Training_Learning/CourseCard";
 import RecCourses from "../components/Training_Learning/RecCourses";
 import LearningPaths from "../components/Training_Learning/LearningPaths";
 import CreateCourseModal from "../components/Training_Learning/CreateCourseModal";
-import SidebarResponsiveLayout from "../components/Training_Learning/SidebarResponsiveLayout";
 import {
   PLATFORMS,
   DUMMY_COURSES,
@@ -76,8 +75,10 @@ function CourseGridSection({
 
 export default function TrainingLearning() {
   const platformScrollerRef = useRef(null);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isCreateCourseOpen, setIsCreateCourseOpen] = useState(false);
 
+  // ✅ Make courses editable (so delete/edit actually works)
   const [courses, setCourses] = useState(() => DUMMY_COURSES);
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -158,23 +159,47 @@ export default function TrainingLearning() {
     return filteredCourses.slice(start, start + ITEMS_PER_PAGE);
   }, [filteredCourses, safePage]);
 
+  // ✅ Platforms should NOT be filtered by the course search bar
   const filteredPlatforms = useMemo(() => PLATFORMS, []);
-  const recommendedCourses = useMemo(() => courses.slice(0, 6), [courses]);
+
+  useEffect(() => {
+    const sidebar =
+      document.getElementById("app-sidebar") || document.querySelector('[data-sidebar="true"]');
+
+    if (!sidebar) return;
+
+    const update = () => {
+      setIsSidebarCollapsed(sidebar.getBoundingClientRect().width <= 120);
+    };
+
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(sidebar);
+
+    return () => ro.disconnect();
+  }, []);
 
   const goToPage = (page) => {
     const next = Math.min(Math.max(1, page), totalPages);
     setCurrentPage(next);
   };
 
+  const recommendedCourses = useMemo(() => courses.slice(0, 6), [courses]);
+
+  // ✅ Admin actions
   const handleDeleteCourse = (id) => {
     setCourses((prev) => prev.filter((c) => c.id !== id));
   };
 
   const handleEditCourse = (course) => {
+    // for now, demo only
     console.log("Edit course:", course);
   };
 
   const handleCreateCourseSubmit = (payload) => {
+    console.log("CreateCourseModal submit:", payload);
+
+    // OPTIONAL: add it to the list so it shows instantly
     setCourses((prev) => [
       { ...payload, id: (prev.at(-1)?.id ?? 0) + 1 },
       ...prev,
@@ -183,76 +208,126 @@ export default function TrainingLearning() {
 
   return (
     <div>
+      {/* FULL BLEED SECTION */}
       <LearningPlatformsCarousel
         platformScrollerRef={platformScrollerRef}
         filteredPlatforms={filteredPlatforms}
         onScrollPlatforms={scrollPlatforms}
       />
 
+      {/* EVERYTHING ELSE PADDED */}
       <div className="p-6">
         {/* Search + Sort */}
         <div className="mt-8 flex justify-center">
           <div className="max-w-4xl w-full">
             <div className="bg-white rounded-2xl border p-4">
               <div className="flex items-center gap-3">
-                <input
-                  value={searchQuery}
-                  onChange={(e) => setSearchQueryAndReset(e.target.value)}
-                  placeholder="Search courses..."
-                  className="w-full h-10 pl-4 pr-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#DAB619]/50"
-                />
+                <div className="relative flex-1">
+                  <input
+                    value={searchQuery}
+                    onChange={(e) => setSearchQueryAndReset(e.target.value)}
+                    placeholder="Search courses..."
+                    className="w-full h-10 pl-4 pr-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#DAB619]/50"
+                  />
+                </div>
+
                 <SortFilterDropdown value={sortBy} onChange={setSortByAndReset} />
               </div>
             </div>
           </div>
         </div>
 
-        <SidebarResponsiveLayout
-          sidebar={
-            <FiltersPanel
-              variant="auto"
-              showSearch={false}
-              showClearTop={false}
-              showClearBottom
-              departmentFilter={departmentFilter}
-              setDepartmentFilter={setDepartmentFilterAndReset}
-              roleFilter={roleFilter}
-              setRoleFilter={setRoleFilterAndReset}
-              skillFilter={skillFilter}
-              setSkillFilter={setSkillFilterAndReset}
-              onClear={handleClearAll}
-            />
-          }
-          main={
-            <CourseGridSection
-              paginatedCourses={paginatedCourses}
-              filteredCourses={filteredCourses}
-              safePage={safePage}
-              totalPages={totalPages}
-              goToPage={goToPage}
-              handleClearAll={handleClearAll}
-              onEditCourse={handleEditCourse}
-              onDeleteCourse={handleDeleteCourse}
-            />
-          }
-          bottom={
-            <>
-              <RecCourses title="Recommended for you" courses={recommendedCourses} fullBleed />
+        {/* Filters + Grid */}
+        {isSidebarCollapsed ? (
+          <>
+            <div className="mt-6 grid grid-cols-12 gap-6">
+              <aside className="col-span-3">
+                <FiltersPanel
+                  variant="sidebar"
+                  showSearch={false}
+                  showClearTop={false}
+                  departmentFilter={departmentFilter}
+                  setDepartmentFilter={setDepartmentFilterAndReset}
+                  roleFilter={roleFilter}
+                  setRoleFilter={setRoleFilterAndReset}
+                  skillFilter={skillFilter}
+                  setSkillFilter={setSkillFilterAndReset}
+                  onClear={handleClearAll}
+                />
+              </aside>
 
-              <div className="mt-8 flex justify-end max-w-4xl w-full">
-                <button
-                  type="button"
-                  onClick={() => setIsCreateCourseOpen(true)}
-                  className="px-6 py-2.5 rounded-lg bg-[#DAB619] text-white font-semibold hover:bg-[#c4a015] transition shadow-sm"
-                >
-                  + New Course
-                </button>
-              </div>
+              <main className="col-span-9">
+                <CourseGridSection
+                  paginatedCourses={paginatedCourses}
+                  filteredCourses={filteredCourses}
+                  safePage={safePage}
+                  totalPages={totalPages}
+                  goToPage={goToPage}
+                  handleClearAll={handleClearAll}
+                  onEditCourse={handleEditCourse}
+                  onDeleteCourse={handleDeleteCourse}
+                />
+              </main>
+            </div>
 
-              <LearningPaths defaultOpen={null} />
-            </>
-          }
-        />
+            <RecCourses title="Recommended for you" courses={recommendedCourses} fullBleed />
+
+            <div className="mt-8 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setIsCreateCourseOpen(true)}
+                className="px-6 py-2.5 rounded-lg bg-[#DAB619] text-white font-semibold hover:bg-[#c4a015] transition shadow-sm"
+              >
+                + New Course
+              </button>
+            </div>
+
+            <LearningPaths defaultOpen={null} />
+          </>
+        ) : (
+          <div className="mt-1 flex flex-col items-center">
+            <div className="max-w-4xl w-full">
+              <FiltersPanel
+                variant="inline"
+                showSearch={false}
+                showClearTop={false}
+                showClearBottom={true}
+                departmentFilter={departmentFilter}
+                setDepartmentFilter={setDepartmentFilterAndReset}
+                roleFilter={roleFilter}
+                setRoleFilter={setRoleFilterAndReset}
+                skillFilter={skillFilter}
+                setSkillFilter={setSkillFilterAndReset}
+                onClear={handleClearAll}
+              />
+
+              <CourseGridSection
+                paginatedCourses={paginatedCourses}
+                filteredCourses={filteredCourses}
+                safePage={safePage}
+                totalPages={totalPages}
+                goToPage={goToPage}
+                handleClearAll={handleClearAll}
+                onEditCourse={handleEditCourse}
+                onDeleteCourse={handleDeleteCourse}
+              />
+            </div>
+
+            <RecCourses title="Recommended for you" courses={recommendedCourses} fullBleed />
+
+            <div className="mt-8 flex justify-end max-w-4xl w-full">
+              <button
+                type="button"
+                onClick={() => setIsCreateCourseOpen(true)}
+                className="px-6 py-2.5 rounded-lg bg-[#DAB619] text-white font-semibold hover:bg-[#c4a015] transition shadow-sm"
+              >
+                + New Course
+              </button>
+            </div>
+
+            <LearningPaths defaultOpen={null} />
+          </div>
+        )}
 
         <CreateCourseModal
           open={isCreateCourseOpen}
