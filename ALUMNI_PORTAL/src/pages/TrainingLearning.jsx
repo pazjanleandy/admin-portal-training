@@ -6,6 +6,7 @@ import RecCourses from "../components/Training_Learning/RecCourses";
 import LearningPaths from "../components/Training_Learning/LearningPaths";
 import CreateCourseModal from "../components/Training_Learning/CreateCourseModal";
 import { PLATFORMS, DUMMY_COURSES } from "../components/Training_Learning/TrainingLearningDummyData";
+import LearningPlatformsCarousel from "../components/Training_Learning/LearningPlatformsCarousel";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -61,6 +62,7 @@ function CourseGridSection({
               className="px-5 py-2.5 bg-[#DAB619] text-white hover:bg-[#c4a015] disabled:opacity-50 disabled:cursor-not-allowed rounded-md border border-[#AAA9A9] transition-colors"
               disabled={safePage === 1}
               onClick={() => goToPage(1)}
+              type="button"
             >
               FIRST
             </button>
@@ -70,6 +72,7 @@ function CourseGridSection({
                 className="px-3 py-2.5 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                 disabled={safePage === 1}
                 onClick={() => goToPage(safePage - 1)}
+                type="button"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -96,6 +99,7 @@ function CourseGridSection({
                           : "text-[#7B7B7B] hover:bg-[#F0F0F0]"
                       }`}
                       onClick={() => goToPage(page)}
+                      type="button"
                     >
                       {page}
                     </button>
@@ -107,6 +111,7 @@ function CourseGridSection({
                 className="px-3 py-2.5 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                 disabled={safePage === totalPages}
                 onClick={() => goToPage(safePage + 1)}
+                type="button"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -123,6 +128,7 @@ function CourseGridSection({
               className="px-5 py-2.5 bg-[#DAB619] text-white hover:bg-[#c4a015] disabled:opacity-50 disabled:cursor-not-allowed rounded-md border border-[#AAA9A9] transition-colors"
               disabled={safePage === totalPages}
               onClick={() => goToPage(totalPages)}
+              type="button"
             >
               LAST
             </button>
@@ -135,6 +141,7 @@ function CourseGridSection({
           <button
             onClick={handleClearAll}
             className="px-6 py-2 bg-[#DAB619] text-white rounded-lg hover:bg-[#c4a317] transition-colors font-medium"
+            type="button"
           >
             Clear All Filters
           </button>
@@ -260,75 +267,89 @@ export default function TrainingLearning() {
   };
 
   return (
-    <div className="p-6">
-      {/* Platforms Carousel */}
-      <section className="rounded-2xl px-16 py-10 bg-[#EEE6C8]">
-        <h2 className="text-lg font-semibold mb-6">Learning Platforms</h2>
+    <div>
+      {/* FULL BLEED SECTION */}
+      <LearningPlatformsCarousel
+        platformScrollerRef={platformScrollerRef}
+        filteredPlatforms={filteredPlatforms}
+        onScrollPlatforms={scrollPlatforms}
+      />
 
-        <div className="relative">
-          <button
-            onClick={() => scrollPlatforms(-1)}
-            className="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full border bg-white grid place-items-center hover:bg-gray-50 transition-colors"
-          >
-            ‹
-          </button>
+      {/* EVERYTHING ELSE PADDED */}
+      <div className="p-6">
+        {/* Search + Sort */}
+        <div className="mt-8 flex justify-center">
+          <div className="max-w-4xl w-full">
+            <div className="bg-white rounded-2xl border p-4">
+              <div className="flex items-center gap-3">
+                <div className="relative flex-1">
+                  <input
+                    value={searchQuery}
+                    onChange={(e) => setSearchQueryAndReset(e.target.value)}
+                    placeholder="Search courses..."
+                    className="w-full h-10 pl-4 pr-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#DAB619]/50"
+                  />
+                </div>
 
-          <button
-            onClick={() => scrollPlatforms(1)}
-            className="absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full border bg-white grid place-items-center hover:bg-gray-50 transition-colors"
-          >
-            ›
-          </button>
-
-          <div
-            ref={platformScrollerRef}
-            className="flex justify-center gap-8 overflow-x-auto px-6 py-8"
-          >
-            {filteredPlatforms.map((p) => (
-              <a
-                key={p.name}
-                href={p.href}
-                target="_blank"
-                rel="noreferrer"
-                className="w-[240px] h-[120px] bg-white rounded-2xl border flex items-center justify-center gap-3 shadow-md hover:scale-105 transition"
-              >
-                <img src={p.logo} className="h-10" alt={p.name} />
-                <span className="font-medium">{p.name}</span>
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Search + Sort */}
-      <div className="mt-8 flex justify-center">
-        <div className="max-w-4xl w-full">
-          <div className="bg-white rounded-2xl border p-4">
-            <div className="flex items-center gap-3">
-              <div className="relative flex-1">
-                <input
-                  value={searchQuery}
-                  onChange={(e) => setSearchQueryAndReset(e.target.value)}
-                  placeholder="Search courses..."
-                  className="w-full h-10 pl-4 pr-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#DAB619]/50"
-                />
+                <SortFilterDropdown value={sortBy} onChange={setSortByAndReset} />
               </div>
-
-              <SortFilterDropdown value={sortBy} onChange={setSortByAndReset} />
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Filters + Grid */}
-      {isSidebarCollapsed ? (
-        <>
-          <div className="mt-6 grid grid-cols-12 gap-6">
-            <aside className="col-span-3">
+        {/* Filters + Grid */}
+        {isSidebarCollapsed ? (
+          <>
+            <div className="mt-6 grid grid-cols-12 gap-6">
+              <aside className="col-span-3">
+                <FiltersPanel
+                  variant="sidebar"
+                  showSearch={false}
+                  showClearTop={false}
+                  departmentFilter={departmentFilter}
+                  setDepartmentFilter={setDepartmentFilterAndReset}
+                  roleFilter={roleFilter}
+                  setRoleFilter={setRoleFilterAndReset}
+                  skillFilter={skillFilter}
+                  setSkillFilter={setSkillFilterAndReset}
+                  onClear={handleClearAll}
+                />
+              </aside>
+
+              <main className="col-span-9">
+                <CourseGridSection
+                  paginatedCourses={paginatedCourses}
+                  filteredCourses={filteredCourses}
+                  safePage={safePage}
+                  totalPages={totalPages}
+                  goToPage={goToPage}
+                  handleClearAll={handleClearAll}
+                />
+              </main>
+            </div>
+
+            <RecCourses title="Recommended for you" courses={recommendedCourses} fullBleed />
+
+            <div className="mt-8 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setIsCreateCourseOpen(true)}
+                className="px-6 py-2.5 rounded-lg bg-[#DAB619] text-white font-semibold hover:bg-[#c4a015] transition shadow-sm"
+              >
+                + New Course
+              </button>
+            </div>
+
+            <LearningPaths defaultOpen={null} />
+          </>
+        ) : (
+          <div className="mt-1 flex flex-col items-center">
+            <div className="max-w-4xl w-full">
               <FiltersPanel
-                variant="sidebar"
+                variant="inline"
                 showSearch={false}
                 showClearTop={false}
+                showClearBottom={true}
                 departmentFilter={departmentFilter}
                 setDepartmentFilter={setDepartmentFilterAndReset}
                 roleFilter={roleFilter}
@@ -337,9 +358,7 @@ export default function TrainingLearning() {
                 setSkillFilter={setSkillFilterAndReset}
                 onClear={handleClearAll}
               />
-            </aside>
 
-            <main className="col-span-9">
               <CourseGridSection
                 paginatedCourses={paginatedCourses}
                 filteredCourses={filteredCourses}
@@ -348,71 +367,30 @@ export default function TrainingLearning() {
                 goToPage={goToPage}
                 handleClearAll={handleClearAll}
               />
-            </main>
+            </div>
+
+            <RecCourses title="Recommended for you" courses={recommendedCourses} fullBleed />
+
+            <div className="mt-8 flex justify-end max-w-4xl w-full">
+              <button
+                type="button"
+                onClick={() => setIsCreateCourseOpen(true)}
+                className="px-6 py-2.5 rounded-lg bg-[#DAB619] text-white font-semibold hover:bg-[#c4a015] transition shadow-sm"
+              >
+                + New Course
+              </button>
+            </div>
+
+            <LearningPaths defaultOpen={null} />
           </div>
+        )}
 
-          <RecCourses title="Recommended for you" courses={recommendedCourses} fullBleed />
-
-          <div className="mt-8 flex justify-end">
-            <button
-              type="button"
-              onClick={() => setIsCreateCourseOpen(true)}
-              className="px-6 py-2.5 rounded-lg bg-[#DAB619] text-white font-semibold hover:bg-[#c4a015] transition shadow-sm"
-            >
-              + New Course
-            </button>
-          </div>
-
-          <LearningPaths defaultOpen={null} />
-        </>
-      ) : (
-        <div className="mt-1 flex flex-col items-center">
-          <div className="max-w-4xl w-full">
-            <FiltersPanel
-              variant="inline"
-              showSearch={false}
-              showClearTop={false}
-              showClearBottom={true}
-              departmentFilter={departmentFilter}
-              setDepartmentFilter={setDepartmentFilterAndReset}
-              roleFilter={roleFilter}
-              setRoleFilter={setRoleFilterAndReset}
-              skillFilter={skillFilter}
-              setSkillFilter={setSkillFilterAndReset}
-              onClear={handleClearAll}
-            />
-
-            <CourseGridSection
-              paginatedCourses={paginatedCourses}
-              filteredCourses={filteredCourses}
-              safePage={safePage}
-              totalPages={totalPages}
-              goToPage={goToPage}
-              handleClearAll={handleClearAll}
-            />
-          </div>
-
-          <RecCourses title="Recommended for you" courses={recommendedCourses} fullBleed />
-
-          <div className="mt-8 flex justify-end max-w-4xl w-full">
-            <button
-              type="button"
-              onClick={() => setIsCreateCourseOpen(true)}
-              className="px-6 py-2.5 rounded-lg bg-[#DAB619] text-white font-semibold hover:bg-[#c4a015] transition shadow-sm"
-            >
-              + New Course
-            </button>
-          </div>
-
-          <LearningPaths defaultOpen={null} />
-        </div>
-      )}
-
-      <CreateCourseModal
-        open={isCreateCourseOpen}
-        onClose={() => setIsCreateCourseOpen(false)}
-        onSubmit={handleCreateCourseSubmit}
-      />
+        <CreateCourseModal
+          open={isCreateCourseOpen}
+          onClose={() => setIsCreateCourseOpen(false)}
+          onSubmit={handleCreateCourseSubmit}
+        />
+      </div>
     </div>
   );
 }
