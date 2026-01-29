@@ -13,7 +13,7 @@ const CourseCard = ({ course, onEdit, onDelete }) => {
                 e.preventDefault();
                 onEdit(course);
               }}
-              className="px-3 py-1 text-xs rounded-md bg-[#DAB619] text-white hover:bg-blue-700 shadow"
+              className="px-3 py-1 text-xs rounded-md bg-[#DAB619] text-white hover:bg-[#6E6127]"
             >
               Edit
             </button>

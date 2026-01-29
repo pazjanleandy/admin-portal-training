@@ -188,9 +188,9 @@ export default function TrainingLearning() {
     setCourses((prev) => prev.filter((c) => c.id !== id));
   };
 
-  const handleEditCourse = (course) => {
-    // for now, demo only
-    console.log("Edit course:", course);
+  // ✅ MINIMAL: just open the existing modal when "Edit" is clicked
+  const handleEditCourse = () => {
+    setIsCreateCourseOpen(true);
   };
 
   const handleCreateCourseSubmit = (payload) => {
