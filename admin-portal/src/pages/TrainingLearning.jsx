@@ -233,10 +233,8 @@ export default function TrainingLearning() {
     return filteredCourses.slice(start, start + ITEMS_PER_PAGE);
   }, [filteredCourses, safePage]);
 
-  const filteredPlatforms = useMemo(() => {
-    const q = searchQuery.toLowerCase();
-    return PLATFORMS.filter((p) => p.name.toLowerCase().includes(q));
-  }, [searchQuery]);
+  // ✅ Platforms should NOT be filtered by the course search bar
+  const filteredPlatforms = useMemo(() => PLATFORMS, []);
 
   useEffect(() => {
     const sidebar =
