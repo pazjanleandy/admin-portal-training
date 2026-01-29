@@ -46,13 +46,6 @@ Added under `src/components/Training_Learning/`:
 - `CertificationDummyData.jsx`
   - Dummy data source for certifications (used for UI testing/demo)
 
-- `SidebarResponsiveLayout.jsx`
- - Layout wrapper component that handles responsive behavior between:
-  - Inline layout (filters above grid)
-  - Sidebar layout (filters in left panel)
- - Internally uses `ResizeObserver` to detect sidebar width via `#app-sidebar`
- - Encapsulates layout logic so `TrainingLearning.jsx` stays focused on UI and state only
-
 - `Pagination.jsx`
   - Reusable pagination UI component for navigating paged results
   - Supports:
