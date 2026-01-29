@@ -78,7 +78,6 @@ export default function TrainingLearning() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isCreateCourseOpen, setIsCreateCourseOpen] = useState(false);
 
-  // ✅ Make courses editable (so delete/edit actually works)
   const [courses, setCourses] = useState(() => DUMMY_COURSES);
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -159,7 +158,6 @@ export default function TrainingLearning() {
     return filteredCourses.slice(start, start + ITEMS_PER_PAGE);
   }, [filteredCourses, safePage]);
 
-  // ✅ Platforms should NOT be filtered by the course search bar
   const filteredPlatforms = useMemo(() => PLATFORMS, []);
 
   useEffect(() => {
@@ -186,7 +184,6 @@ export default function TrainingLearning() {
 
   const recommendedCourses = useMemo(() => courses.slice(0, 6), [courses]);
 
-  // ✅ Admin actions
   const handleDeleteCourse = (id) => {
     setCourses((prev) => prev.filter((c) => c.id !== id));
   };

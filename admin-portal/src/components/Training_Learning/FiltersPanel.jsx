@@ -87,7 +87,6 @@ export default function FiltersPanel({
       {/* Filters layout */}
       <div className="mt-4">
         {isSidebar ? (
-          // ✅ SIDEBAR MODE → CENTER EVERYTHING
           <div className="flex flex-col items-center gap-4">
             <div className="w-full max-w-[220px] space-y-4">
               <DeparmentDropdown
@@ -118,7 +117,6 @@ export default function FiltersPanel({
             )}
           </div>
         ) : (
-          // ✅ INLINE MODE → DROPDOWNS LEFT, CLEAR RIGHT
           <div className="flex items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-4">
               <DeparmentDropdown

@@ -4,6 +4,7 @@ import ContinueCertificationCard from '../components/ContinueCertificationCard'
 import CertificateCard from '../components/CertificateCard'
 import ViewHistoryCertification from '../components/Training_Learning/ViewHistoryCertification'
 import { CONTINUE_CERTIFICATIONS, MY_CERTIFICATES } from '../components/Training_Learning/CertificationDummyData'
+import UploadCertificateModal from '../components/Training_Learning/UploadCertificateModal'
 
 export default function CertificationsPage() {
   const [certificateTab, setCertificateTab] = useState('all')
@@ -11,6 +12,7 @@ export default function CertificationsPage() {
   const [sortBy, setSortBy] = useState('newest')
   const [currentPage, setCurrentPage] = useState(1)
   const [isHistoryOpen, setIsHistoryOpen] = useState(false)
+  const [isUploadOpen, setIsUploadOpen] = useState(false)
   const itemsPerPage = 6
 
   const filteredCertificates = useMemo(() => {
@@ -50,6 +52,8 @@ export default function CertificationsPage() {
         isOpen={isHistoryOpen} 
         onClose={() => setIsHistoryOpen(false)} 
       />
+
+      <UploadCertificateModal isOpen={isUploadOpen} onClose={() => setIsUploadOpen(false)} />
 
       {/* Continue Certification Section */}
       <section>
@@ -124,7 +128,7 @@ export default function CertificationsPage() {
           </button>
 
           <button
-            onClick={() => setCertificateTab('upload')}
+            onClick={() => { setCertificateTab('upload'); setIsUploadOpen(true); }}
             className={`flex items-center gap-4 p-5 rounded-xl border transition-all duration-200 ${
               certificateTab === 'upload'
                 ? 'bg-white border-yellow-400 shadow-md ring-1 ring-yellow-400'

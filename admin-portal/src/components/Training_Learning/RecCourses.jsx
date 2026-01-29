@@ -18,7 +18,6 @@ export default function RecCourses({
         <div className="px-6 sm:px-10 py-7">
           <h2 className="text-lg font-semibold mb-5 text-center">{title}</h2>
 
-          {/* ✅ make the whole carousel a bit smaller */}
           <div className="scale-[0.96] origin-center">
             <div className="relative">
               {/* edge fades */}
