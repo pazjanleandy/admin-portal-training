@@ -3,7 +3,8 @@ import FiltersPanel from "../components/Training_Learning/FiltersPanel";
 import SortFilterDropdown from "../components/content_management/SortFilterDropdown";
 import CourseCard from "../components/Training_Learning/CourseCard";
 import RecCourses from "../components/Training_Learning/RecCourses";
-import LearningPaths from "../components/Training_Learning/LearningPaths"; // ✅ ADD THIS
+import LearningPaths from "../components/Training_Learning/LearningPaths";
+import CreateCourseModal from "../components/Training_Learning/CreateCourseModal"; // ✅ ADD THIS
 
 const PLATFORMS = [
   {
@@ -106,8 +107,7 @@ const DUMMY_COURSES = [
     role: "Manager",
     instructor: { name: "Robert Wilson", avatar: "https://i.pravatar.cc/150?img=11" },
     price: 0,
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png",
+    image: "https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png",
     platform: "LinkedIn Learning",
     url: "https://www.linkedin.com/learning/",
   },
@@ -302,12 +302,14 @@ export default function TrainingLearning() {
   const platformScrollerRef = useRef(null);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
+  // ✅ MODAL STATE
+  const [isCreateCourseOpen, setIsCreateCourseOpen] = useState(false);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [departmentFilter, setDepartmentFilter] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
   const [skillFilter, setSkillFilter] = useState("");
-
   const [currentPage, setCurrentPage] = useState(1);
 
   const setSearchQueryAndReset = (value) => {
@@ -410,6 +412,11 @@ export default function TrainingLearning() {
 
   const recommendedCourses = useMemo(() => DUMMY_COURSES.slice(0, 6), []);
 
+  // ✅ handle submit (for now, UI only)
+  const handleCreateCourseSubmit = (payload) => {
+    console.log("CreateCourseModal submit:", payload);
+  };
+
   return (
     <div className="p-6">
       {/* Platforms Carousel */}
@@ -504,7 +511,17 @@ export default function TrainingLearning() {
 
           <RecCourses title="Recommended for you" courses={recommendedCourses} fullBleed />
 
-          {/* ✅ ADD LEARNING PATHS UNDER CAROUSEL */}
+          {/* ✅ BUTTON ABOVE LEARNING PATHS */}
+          <div className="mt-8 flex justify-end">
+            <button
+              type="button"
+              onClick={() => setIsCreateCourseOpen(true)}
+              className="px-6 py-2.5 rounded-lg bg-[#DAB619] text-white font-semibold hover:bg-[#c4a015] transition shadow-sm"
+            >
+              + New Course
+            </button>
+          </div>
+
           <LearningPaths defaultOpen={null} />
         </>
       ) : (
@@ -536,10 +553,27 @@ export default function TrainingLearning() {
 
           <RecCourses title="Recommended for you" courses={recommendedCourses} fullBleed />
 
-          {/* ✅ ADD LEARNING PATHS UNDER CAROUSEL */}
+          {/* ✅ BUTTON ABOVE LEARNING PATHS */}
+          <div className="mt-8 flex justify-end max-w-4xl w-full">
+            <button
+              type="button"
+              onClick={() => setIsCreateCourseOpen(true)}
+              className="px-6 py-2.5 rounded-lg bg-[#DAB619] text-white font-semibold hover:bg-[#c4a015] transition shadow-sm"
+            >
+              + New Course
+            </button>
+          </div>
+
           <LearningPaths defaultOpen={null} />
         </div>
       )}
+
+      {/* ✅ MODAL (placed once, works for both layouts) */}
+      <CreateCourseModal
+        open={isCreateCourseOpen}
+        onClose={() => setIsCreateCourseOpen(false)}
+        onSubmit={handleCreateCourseSubmit}
+      />
     </div>
   );
 }
