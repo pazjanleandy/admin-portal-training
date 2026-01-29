@@ -152,4 +152,3 @@ export const DUMMY_COURSES = [
   },
 ];
 
-

@@ -31,7 +31,14 @@ const navItems = [
   },
   { name: 'Directory & Networking', icon: AddressBook, path: '/directory' },
   { name: 'Career & Job Opportunities', icon: Briefcase, path: '/training' },
-  { name: 'Training & Learning', icon: BookOpen, path: '/training' },
+  {
+    name: 'Training & Learning',
+    icon: BookOpen,
+    subItems: [
+      { name: 'Training & Learning paths', path: '/training/paths' },
+      { name: 'Certification', path: '/training/certification' },
+    ],
+  },
   { name: 'Achievements & Recognition', icon: Medal, path: '/achievements' },
   { name: 'Events & Community Engagement', icon: CalendarBlank, path: '/events' },
   { name: 'Announcements', icon: Megaphone, path: '/announcements' },

@@ -5,9 +5,9 @@ import CourseCard from "../components/Training_Learning/CourseCard";
 import RecCourses from "../components/Training_Learning/RecCourses";
 import LearningPaths from "../components/Training_Learning/LearningPaths";
 import CreateCourseModal from "../components/Training_Learning/CreateCourseModal";
-import { PLATFORMS, DUMMY_COURSES} from "../components/Training_Learning/TrainingLearningDummyData";
+import { PLATFORMS, DUMMY_COURSES } from "../components/Training_Learning/TrainingLearningDummyData";
 
-const ITEMS_PER_PAGE = 6;  
+const ITEMS_PER_PAGE = 6;
 
 function getPageNumbers(currentPage, totalPages) {
   if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1);
