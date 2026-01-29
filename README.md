@@ -1,11 +1,12 @@
 ## Training & Learning Page Enhancements
 
-> **Note:** This README assumes you have already followed the setup and guidelines in Andrei-code05’s original repository README, as this project is based on a cloned version of that repository.
+**Note:** This README assumes you have already followed the setup and guidelines in Andrei-code05’s original repository README, as this project is based on a cloned version of that repository.
 
 ### Prerequisite
 Please run the following command before testing the UI:
 ```bash
-'npm install react-icons'
+npm install react-icons
+```
 
 #### Sidebar Integration
 - Added `id="app-sidebar"` to the root div of Sidebar.jsx to allow TrainingLearning.jsx to detect sidebar width (used for responsive filter layout).
