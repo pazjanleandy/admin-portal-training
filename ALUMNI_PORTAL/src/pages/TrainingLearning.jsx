@@ -4,164 +4,8 @@ import SortFilterDropdown from "../components/content_management/SortFilterDropd
 import CourseCard from "../components/Training_Learning/CourseCard";
 import RecCourses from "../components/Training_Learning/RecCourses";
 import LearningPaths from "../components/Training_Learning/LearningPaths";
-import CreateCourseModal from "../components/Training_Learning/CreateCourseModal"; // ✅ ADD THIS
-
-const PLATFORMS = [
-  {
-    name: "Microsoft Learning",
-    href: "https://learn.microsoft.com/training/",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg",
-  },
-  {
-    name: "Udemy",
-    href: "https://www.udemy.com/",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/e/e3/Udemy_logo.svg",
-  },
-  {
-    name: "LinkedIn Learning",
-    href: "https://www.linkedin.com/learning/",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png",
-  },
-  {
-    name: "IBM SkillsBuild",
-    href: "https://skillsbuild.org/",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg",
-  },
-];
-
-// Dummy Data
-const DUMMY_COURSES = [
-  {
-    id: 1,
-    title: "HTML & CSS Mastery 2025 - Build Modern Websites",
-    description:
-      "Master modern HTML5 and CSS3 from scratch. Build responsive, accessible websites with Flexbox, Grid, and animations.",
-    category: "Programming",
-    duration: "3 Months",
-    skill: "HTML/CSS",
-    department: "Engineering",
-    role: "Frontend Developer",
-    instructor: { name: "Lira Johnson", avatar: "https://i.pravatar.cc/150?img=1" },
-    price: 0,
-    image: "https://upload.wikimedia.org/wikipedia/commons/e/e3/Udemy_logo.svg",
-    platform: "Udemy",
-    url: "https://www.udemy.com/course/html-css-mastery-2025/",
-  },
-  {
-    id: 2,
-    title: "AWS Cloud Practitioner Essentials",
-    description:
-      "Learn AWS fundamentals including EC2, S3, and RDS. Prepare for the AWS Certified Cloud Practitioner exam.",
-    category: "Cloud",
-    duration: "2 Months",
-    skill: "AWS",
-    department: "Engineering",
-    role: "Cloud Architect",
-    instructor: { name: "Sarah Chen", avatar: "https://i.pravatar.cc/150?img=5" },
-    price: 0,
-    image: "https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg",
-    platform: "IBM SkillsBuild",
-    url: "https://skillsbuild.org/",
-  },
-  {
-    id: 3,
-    title: "React.js Fundamentals - Complete Guide",
-    description:
-      "Master React hooks, components, and state management. Build modern single-page applications from scratch.",
-    category: "Programming",
-    duration: "4 Months",
-    skill: "React",
-    department: "Engineering",
-    role: "Full Stack Developer",
-    instructor: { name: "Mike Ross", avatar: "https://i.pravatar.cc/150?img=8" },
-    price: 0,
-    image: "https://upload.wikimedia.org/wikipedia/commons/e/e3/Udemy_logo.svg",
-    platform: "Udemy",
-    url: "https://www.udemy.com/",
-  },
-  {
-    id: 4,
-    title: "Azure Fundamentals AZ-900",
-    description:
-      "Microsoft Azure basics including cloud concepts, core services, security, privacy, compliance, and pricing.",
-    category: "Cloud",
-    duration: "3 Months",
-    skill: "Azure",
-    department: "IT",
-    role: "Cloud Engineer",
-    instructor: { name: "Emily Davis", avatar: "https://i.pravatar.cc/150?img=9" },
-    price: 0,
-    image: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg",
-    platform: "Microsoft Learning",
-    url: "https://learn.microsoft.com/training/",
-  },
-  {
-    id: 5,
-    title: "Leadership and Management Essentials",
-    description:
-      "Develop critical leadership skills, team management, and strategic thinking for modern business environments.",
-    category: "Management",
-    duration: "2 Months",
-    skill: "Leadership",
-    department: "Operations",
-    role: "Manager",
-    instructor: { name: "Robert Wilson", avatar: "https://i.pravatar.cc/150?img=11" },
-    price: 0,
-    image: "https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png",
-    platform: "LinkedIn Learning",
-    url: "https://www.linkedin.com/learning/",
-  },
-  {
-    id: 6,
-    title: "Python for Data Science",
-    description:
-      "Learn Python programming with focus on data analysis, Pandas, NumPy, and data visualization techniques.",
-    category: "Data Science",
-    duration: "3 Months",
-    skill: "Python",
-    department: "Analytics",
-    role: "Data Scientist",
-    instructor: { name: "Alex Turner", avatar: "https://i.pravatar.cc/150?img=12" },
-    price: 0,
-    image: "https://upload.wikimedia.org/wikipedia/commons/e/e3/Udemy_logo.svg",
-    platform: "Udemy",
-    url: "https://www.udemy.com/",
-  },
-  {
-    id: 7,
-    title: "Cybersecurity Fundamentals",
-    description:
-      "IBM's comprehensive cybersecurity course covering network security, threats, and protection strategies.",
-    category: "Security",
-    duration: "4 Months",
-    skill: "Cybersecurity",
-    department: "IT",
-    role: "Security Analyst",
-    instructor: { name: "Lisa Park", avatar: "https://i.pravatar.cc/150?img=15" },
-    price: 0,
-    image: "https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg",
-    platform: "IBM SkillsBuild",
-    url: "https://skillsbuild.org/",
-  },
-  {
-    id: 8,
-    title: "Power Platform Fundamentals",
-    description:
-      "Microsoft Power Apps, Power Automate, and Power BI basics for business process automation.",
-    category: "Low-Code",
-    duration: "2 Months",
-    skill: "Power Platform",
-    department: "Operations",
-    role: "Business Analyst",
-    instructor: { name: "David Kim", avatar: "https://i.pravatar.cc/150?img=3" },
-    price: 0,
-    image: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg",
-    platform: "Microsoft Learning",
-    url: "https://learn.microsoft.com/training/",
-  },
-];
-
-const ITEMS_PER_PAGE = 6;
+import CreateCourseModal from "../components/Training_Learning/CreateCourseModal";
+import { PLATFORMS, DUMMY_COURSES, ITEMS_PER_PAGE } from "../components/Training_Learning/TrainingLearningDummyData";
 
 function getPageNumbers(currentPage, totalPages) {
   if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -301,10 +145,7 @@ function CourseGridSection({
 export default function TrainingLearning() {
   const platformScrollerRef = useRef(null);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-
-  // ✅ MODAL STATE
   const [isCreateCourseOpen, setIsCreateCourseOpen] = useState(false);
-
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [departmentFilter, setDepartmentFilter] = useState("");
@@ -412,7 +253,6 @@ export default function TrainingLearning() {
 
   const recommendedCourses = useMemo(() => DUMMY_COURSES.slice(0, 6), []);
 
-  // ✅ handle submit (for now, UI only)
   const handleCreateCourseSubmit = (payload) => {
     console.log("CreateCourseModal submit:", payload);
   };
@@ -511,7 +351,6 @@ export default function TrainingLearning() {
 
           <RecCourses title="Recommended for you" courses={recommendedCourses} fullBleed />
 
-          {/* ✅ BUTTON ABOVE LEARNING PATHS */}
           <div className="mt-8 flex justify-end">
             <button
               type="button"
@@ -553,7 +392,6 @@ export default function TrainingLearning() {
 
           <RecCourses title="Recommended for you" courses={recommendedCourses} fullBleed />
 
-          {/* ✅ BUTTON ABOVE LEARNING PATHS */}
           <div className="mt-8 flex justify-end max-w-4xl w-full">
             <button
               type="button"
@@ -568,7 +406,6 @@ export default function TrainingLearning() {
         </div>
       )}
 
-      {/* ✅ MODAL (placed once, works for both layouts) */}
       <CreateCourseModal
         open={isCreateCourseOpen}
         onClose={() => setIsCreateCourseOpen(false)}
