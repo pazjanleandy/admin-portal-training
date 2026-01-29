@@ -152,4 +152,4 @@ export const DUMMY_COURSES = [
   },
 ];
 
-const ITEMS_PER_PAGE = 6;
+
