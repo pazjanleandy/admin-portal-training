@@ -188,7 +188,6 @@ export default function TrainingLearning() {
     setCourses((prev) => prev.filter((c) => c.id !== id));
   };
 
-  // ✅ MINIMAL: just open the existing modal when "Edit" is clicked
   const handleEditCourse = () => {
     setIsCreateCourseOpen(true);
   };
